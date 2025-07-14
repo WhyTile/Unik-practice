@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Оголошення про вакансії</title>
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: #e0e0e0;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background: #1f1f1f;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
+    #profile {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    main {
+      padding: 20px;
+    }
+    .news-card {
+      background: #1e1e1e;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 5px #000;
+      border-left: 3px solid #2196f3;
+    }
+    .news-card:hover {
+      background: #2a2a2a;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    }
+    .news-card h3 {
+      margin-top: 0;
+      color: #2196f3;
+    }
+    .news-card p {
+      margin-bottom: 5px;
+      color: #aaa;
+    }
+    .news-card .date {
+      font-size: 12px;
+      color: #666;
+      text-align: right;
+    }
+    .modal, .authModal, .settingsModal, .addJobModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 800px;
+      color: #e0e0e0;
+      overflow-y: auto;
+      max-height: 90vh;
+      box-shadow: 0 0 15px #00000080;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      color: #fff;
+      cursor: pointer;
+    }
+    input, textarea, button, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+      box-sizing: border-box;
+    }
+    input, textarea, select {
+      background: #2a2a2a;
+      color: #fff;
+    }
+    button {
+      background-color: #2196f3;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: #1976d2;
+    }
+    button.secondary {
+      background-color: #424242;
+    }
+    button.secondary:hover {
+      background-color: #333;
+    }
+    button.danger {
+      background-color: #e53935;
+    }
+    button.danger:hover {
+      background-color: #c62828;
+    }
+    #logout-btn {
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+    .job-details {
+      margin-top: 20px;
+    }
+    .job-details p {
+      margin: 8px 0;
+    }
+    .job-details ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .job-details li {
+      margin-bottom: 5px;
+    }
+    .requirements, .benefits {
+      background: rgba(255,255,255,0.05);
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+    .requirements h4, .benefits h4 {
+      margin-top: 0;
+      color: #2196f3;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #333;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active {
+      border-bottom: 2px solid #2196f3;
+      color: #2196f3;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .profile-info {
+      margin-bottom: 20px;
+    }
+    .profile-info label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      color: #aaa;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .actions button {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>📰 Вакансії / Оголошення</div>
+  <div id="profile"></div>
+</header>
+
+<main id="news-section" style="display: none;">
+  <!-- Стара вакансія -->
+  <div class="news-card" onclick="openModal('manager')">
+    <h3>Менеджер з продажу — 25 000–50 000 ₴</h3>
+    <p>ТОВ Клімат Технології – постачальник інженерних рішень</p>
+    <p>Київ | Повна зайнятість | Досвід від 1 року</p>
+    <div class="date">Опубліковано: 15.06.2023</div>
+  </div>
+  <div class="news-card" onclick="openModal('brocard')">
+    <h3>Продавець-консультант у Brocard — від 20 000 ₴</h3>
+    <p>Brocard — найбільший оператор парфумерно-косметичного ринку</p>
+    <p>Київ | Повна зайнятість | Без досвіду</p>
+    <div class="date">Опубліковано: 20.06.2023</div>
+  </div>
+
+  <!-- Нові вакансії -->
+  <div class="news-card" onclick="openModal('developer')">
+    <h3>Frontend-розробник — від 45 000 ₴</h3>
+    <p>WebStart Studio — IT-компанія зі спеціалізацією на React</p>
+    <p>Віддалено | Повна зайнятість | Досвід від 2 років</p>
+    <div class="date">Опубліковано: 01.07.2023</div>
+  </div>
+  <div class="news-card" onclick="openModal('courier')">
+    <h3>Кур'єр Glovo — до 35 000 ₴</h3>
+    <p>Гнучкий графік, робота по всьому Києву</p>
+    <p>Київ | Часткова зайнятість | Без досвіду</p>
+    <div class="date">Опубліковано: 05.07.2023</div>
+  </div>
+  <div class="news-card" onclick="openModal('barista')">
+    <h3>Бариста в кав'ярню — 18 000–22 000 ₴</h3>
+    <p>Мережа "CoffeeNow" шукає активних барист</p>
+    <p>Київ | Повна зайнятість | Досвід від 6 місяців</p>
+    <div class="date">Опубліковано: 10.07.2023</div>
+  </div>
+  <div class="news-card" onclick="openModal('designer')">
+    <h3>Графічний дизайнер — 30 000–40 000 ₴</h3>
+    <p>Агентство PixelDrop — робота з брендами</p>
+    <p>Віддалено | Повна зайнятість | Досвід від 1 року</p>
+    <div class="date">Опубліковано: 12.07.2023</div>
+  </div>
+  <div class="news-card" onclick="openModal('teacher')">
+    <h3>Онлайн-репетитор з англійської — 20 000–50 000 ₴</h3>
+    <p>Платформа EduTalk запрошує викладачів</p>
+    <p>Віддалено | Гнучкий графік | Досвід від 1 року</p>
+    <div class="date">Опубліковано: 14.07.2023</div>
+  </div>
+
+  <div id="user-jobs-container"></div>
+
+  <button onclick="openAddJobModal()">➕ Додати вакансію</button>
+  <button class="secondary" onclick="openSettingsModal()">⚙️ Налаштування профілю</button>
+</main>
+
+<!-- Модальні вікна вакансій -->
+<div class="modal" id="newsModal-manager" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('manager')">×</span>
+    <h2>Менеджер з продажу</h2>
+    <div class="job-details">
+      <p><strong>Зарплата:</strong> 25 000 – 50 000 ₴ + бонуси</p>
+      <p><strong>Компанія:</strong> ТОВ Клімат Технології</p>
+      <p><strong>Локація:</strong> Київ, вул. Волноваська, 3</p>
+      <p><strong>Тип зайнятості:</strong> Повна зайнятість</p>
+      <p><strong>Досвід роботи:</strong> Від 1 року</p>
+      <p><strong>Опубліковано:</strong> 15.06.2023</p>
+      
+      <div class="requirements">
+        <h4>Вимоги:</h4>
+        <ul>
+          <li>Досвід роботи в продажах від 1 року</li>
+          <li>Знання Excel та 1С на рівні користувача</li>
+          <li>Вміння працювати з клієнтською базою</li>
+          <li>Навички ведення переговорів</li>
+          <li>Відповідальність та організованість</li>
+        </ul>
+      </div>
+      
+      <div class="benefits">
+        <h4>Умови:</h4>
+        <ul>
+          <li>Офіційне працевлаштування</li>
+          <li>Гнучкий графік роботи</li>
+          <li>Корпоративні тренінги</li>
+          <li>Можливість кар'єрного росту</li>
+          <li>Бонусна система мотивації</li>
+        </ul>
+      </div>
+      
+      <p><strong>Опис вакансії:</strong></p>
+      <p>Шукаємо активного менеджера з продажу кліматичного обладнання. В обов'язки входить: підбір обладнання за параметрами клієнта, ведення переговорів, підготовка комерційних пропозицій, робота з існуючою клієнтською базою та пошук нових клієнтів.</p>
+    </div>
+    <button onclick="alert('Резюме успішно відправлено!')">Відправити резюме</button>
+  </div>
+</div>
+
+<div class="modal" id="newsModal-brocard" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('brocard')">×</span>
+    <h2>Продавець-консультант Brocard</h2>
+    <div class="job-details">
+      <p><strong>Зарплата:</strong> від 20 000 ₴ + бонуси</p>
+      <p><strong>Компанія:</strong> Brocard</p>
+      <p><strong>Локація:</strong> Київ, ТРЦ "Ocean Plaza"</p>
+      <p><strong>Тип зайнятості:</strong> Повна зайнятість</p>
+      <p><strong>Досвід роботи:</strong> Без досвіду</p>
+      <p><strong>Опубліковано:</strong> 20.06.2023</p>
+      
+      <div class="requirements">
+        <h4>Вимоги:</h4>
+        <ul>
+          <li>Комунікабельність та доброзичливість</li>
+          <li>Бажання працювати з клієнтами</li>
+          <li>Відповідальність та пунктуальність</li>
+          <li>Досвід роботи в роздрібних продажах буде плюсом</li>
+        </ul>
+      </div>
+      
+      <div class="benefits">
+        <h4>Умови:</h4>
+        <ul>
+          <li>Офіційне працевлаштування</li>
+          <li>Навчання за рахунок компанії</li>
+          <li>Знижки на продукцію компанії</li>
+          <li>Можливість кар'єрного росту</li>
+          <li>Графік роботи 2/2</li>
+        </ul>
+      </div>
+      
+      <p><strong>Опис вакансії:</strong></p>
+      <p>Продаж парфумерно-косметичної продукції в магазині Brocard. Консультування клієнтів, допомога у виборі товару, підтримання порядку у торговому залі, робота з касою.</p>
+    </div>
+    <button onclick="alert('Резюме успішно відправлено!')">Відправити резюме</button>
+  </div>
+</div>
+
+<div class="modal" id="newsModal-developer" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('developer')">×</span>
+    <h2>Frontend-розробник</h2>
+    <div class="job-details">
+      <p><strong>Зарплата:</strong> від 45 000 ₴</p>
+      <p><strong>Компанія:</strong> WebStart Studio</p>
+      <p><strong>Локація:</strong> Віддалено</p>
+      <p><strong>Тип зайнятості:</strong> Повна зайнятість</p>
+      <p><strong>Досвід роботи:</strong> Від 2 років</p>
+      <p><strong>Опубліковано:</strong> 01.07.2023</p>
+      
+      <div class="requirements">
+        <h4>Вимоги:</h4>
+        <ul>
+          <li>Досвід роботи з React від 2 років</li>
+          <li>Знання JavaScript/TypeScript</li>
+          <li>Досвід роботи з REST API</li>
+          <li>Вміння працювати з Git</li>
+          <li>Адаптивна верстка</li>
+          <li>Базові знання бекенду буде плюсом</li>
+        </ul>
+      </div>
+      
+      <div class="benefits">
+        <h4>Умови:</h4>
+        <ul>
+          <li>Гнучкий графік роботи</li>
+          <li>Віддалена робота</li>
+          <li>Медичне страхування</li>
+          <li>Оплачувані курси підвищення кваліфікації</li>
+          <li>Компенсація спорту</li>
+        </ul>
+      </div>
+      
+      <p><strong>Опис вакансії:</strong></p>
+      <p>Розробка та підтримка веб-додатків на React. Участь у плануванні архітектури додатків, написання чистого та підтримуваного коду, співпраця з дизайнерами та бекенд-розробниками.</p>
+    </div>
+    <button onclick="alert('Резюме успішно відправлено!')">Відправити резюме</button>
+  </div>
+</div>
+
+<div class="modal" id="newsModal-courier" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('courier')">×</span>
+    <h2>Кур'єр Glovo</h2>
+    <div class="job-details">
+      <p><strong>Зарплата:</strong> до 35 000 ₴</p>
+      <p><strong>Компанія:</strong> Glovo</p>
+      <p><strong>Локація:</strong> Київ</p>
+      <p><strong>Тип зайнятості:</strong> Часткова зайнятість</p>
+      <p><strong>Досвід роботи:</strong> Без досвіду</p>
+      <p><strong>Опубліковано:</strong> 05.07.2023</p>
+      
+      <div class="requirements">
+        <h4>Вимоги:</h4>
+        <ul>
+          <li>Наявність велосипеда, скутера або авто</li>
+          <li>Смартфон з Android/iOS</li>
+          <li>Відповідальність та пунктуальність</li>
+          <li>Знання міста</li>
+        </ul>
+      </div>
+      
+      <div class="benefits">
+        <h4>Умови:</h4>
+        <ul>
+          <li>Гнучкий графік - ви самі обираєте коли працювати</li>
+          <li>Можливість заробляти від першого дня</li>
+          <li>Виплати щотижня</li>
+          <li>Бонуси за рейтинг</li>
+        </ul>
+      </div>
+      
+      <p><strong>Опис вакансії:</strong></p>
+      <p>Доставка замовлень з ресторанів, магазинів та аптек за допомогою мобільного додатку Glovo. Ви самі обираєте коли і скільки працювати.</p>
+    </div>
+    <button onclick="alert('Заявку успішно відправлено!')">Подати заявку</button>
+  </div>
+</div>
+
+<div class="modal" id="newsModal-barista" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('barista')">×</span>
+    <h2>Бариста в кав'ярню</h2>
+    <div class="job-details">
+      <p><strong>Зарплата:</strong> 18 000 – 22 000 ₴ + чайові</p>
+      <p><strong>Компанія:</strong> Мережа "CoffeeNow"</p>
+      <p><strong>Локація:</strong> Київ, вул. Хрещатик, 15</p>
+      <p><strong>Тип зайнятості:</strong> Повна зайнятість</p>
+      <p><strong>Досвід роботи:</strong> Від 6 місяців</p>
+      <p><strong>Опубліковано:</strong> 10.07.2023</p>
+      
+      <div class="requirements">
+        <h4>Вимоги:</h4>
+        <ul>
+          <li>Досвід роботи баристою від 6 місяців</li>
+          <li>Знання основних кавових напоїв</li>
+          <li>Вміння працювати з кавовими машинами</li>
+          <li>Комунікабельність та доброзичливість</li>
+          <li>Відповідальність</li>
+        </ul>
+      </div>
+      
+      <div class="benefits">
+        <h4>Умови:</h4>
+        <ul>
+          <li>Офіційне працевлаштування</li>
+          <li>Навчання за рахунок компанії</li>
+          <li>Безкоштовна кава під час змін</li>
+          <li>Графік роботи 2/2</li>
+          <li>Можливість кар'єрного росту</li>
+        </ul>
+      </div>
+      
+      <p><strong>Опис вакансії:</strong></p>
+      <p>Приготування кавових напоїв, обслуговування гостей, підтримання чистоти робочого місця, робота з касою.</p>
+    </div>
+    <button onclick="alert('Резюме успішно відправлено!')">Відправити резюме</button>
+  </div>
+</div>
+
+<div class="modal" id="newsModal-designer" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('designer')">×</span>
+    <h2>Графічний дизайнер</h2>
+    <div class="job-details">
+      <p><strong>Зарплата:</strong> 30 000 – 40 000 ₴</p>
+      <p><strong>Компанія:</strong> Агентство PixelDrop</p>
+      <p><strong>Локація:</strong> Віддалено</p>
+      <p><strong>Тип зайнятості:</strong> Повна зайнятість</p>
+      <p><strong>Досвід роботи:</strong> Від 1 року</p>
+      <p><strong>Опубліковано:</strong> 12.07.2023</p>
+      
+      <div class="requirements">
+        <h4>Вимоги:</h4>
+        <ul>
+          <li>Досвід роботи з Adobe Photoshop, Illustrator</li>
+          <li>Розуміння основ брендингу</li>
+          <li>Вміння працювати з типографікою</li>
+          <li>Наявність портфоліо</li>
+          <li>Креативність та відповідальність</li>
+        </ul>
+      </div>
+      
+      <div class="benefits">
+        <h4>Умови:</h4>
+        <ul>
+          <li>Віддалена робота</li>
+          <li>Гнучкий графік</li>
+          <li>Цікаві проекти з відомими брендами</li>
+          <li>Оплачувані курси підвищення кваліфікації</li>
+          <li>Щорічні бонуси</li>
+        </ul>
+      </div>
+      
+      <p><strong>Опис вакансії:</strong></p>
+      <p>Створення графічного дизайну для соціальних мереж, розробка логотипів, фірмового стилю, поліграфії, презентацій. Робота з клієнтами, участь у брейнштормах.</p>
+    </div>
+    <button onclick="alert('Резюме успішно відправлено!')">Відправити резюме</button>
+  </div>
+</div>
+
+<div class="modal" id="newsModal-teacher" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('teacher')">×</span>
+    <h2>Онлайн-репетитор з англійської</h2>
+    <div class="job-details">
+      <p><strong>Зарплата:</strong> 20 000 – 50 000 ₴</p>
+      <p><strong>Компанія:</strong> Платформа EduTalk</p>
+      <p><strong>Локація:</strong> Віддалено</p>
+      <p><strong>Тип зайнятості:</strong> Гнучкий графік</p>
+      <p><strong>Досвід роботи:</strong> Від 1 року</p>
+      <p><strong>Опубліковано:</strong> 14.07.2023</p>
+      
+      <div class="requirements">
+        <h4>Вимоги:</h4>
+        <ul>
+          <li>Вільне володіння англійською мовою</li>
+          <li>Досвід викладання від 1 року</li>
+          <li>Знання методик викладання</li>
+          <li>Навички роботи з Zoom/Skype</li>
+          <li>Вміння знаходити спільну мову з учнями</li>
+        </ul>
+      </div>
+      
+      <div class="benefits">
+        <h4>Умови:</h4>
+        <ul>
+          <li>Віддалена робота</li>
+          <li>Гнучкий графік - ви самі формуєте своє розклад</li>
+          <li>Стабільний потік учнів від платформи</li>
+          <li>Можливість заробляти від $10 за годину</li>
+          <li>Оплачувані тренінги</li>
+        </ul>
+      </div>
+      
+      <p><strong>Опис вакансії:</strong></p>
+      <p>Проведення індивідуальних онлайн-занять з англійської мови для студентів різного віку та рівня підготовки. Підготовка до ЗНО, іспитів, розмовна практика.</p>
+    </div>
+    <button onclick="alert('Резюме успішно відправлено!')">Відправити резюме</button>
+  </div>
+</div>
+
+<!-- Модальне вікно додавання вакансії -->
+<div class="addJobModal" id="addJobModal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeAddJobModal()">×</span>
+    <h2>Додати нову вакансію</h2>
+    <form id="addJobForm">
+      <label for="job-title">Назва вакансії:</label>
+      <input type="text" id="job-title" placeholder="Наприклад: Менеджер з продажу" required>
+      
+      <label for="job-company">Назва компанії:</label>
+      <input type="text" id="job-company" placeholder="Наприклад: ТОВ 'Технології'" required>
+      
+      <label for="job-salary">Зарплата:</label>
+      <input type="text" id="job-salary" placeholder="Наприклад: 25 000–50 000 ₴" required>
+      
+      <label for="job-location">Локація:</label>
+      <input type="text" id="job-location" placeholder="Наприклад: Київ або Віддалено" required>
+      
+      <label for="job-type">Тип зайнятості:</label>
+      <select id="job-type" required>
+        <option value="">Оберіть тип</option>
+        <option value="Повна зайнятість">Повна зайнятість</option>
+        <option value="Часткова зайнятість">Часткова зайнятість</option>
+        <option value="Дистанційна робота">Дистанційна робота</option>
+        <option value="Проектна робота">Проектна робота</option>
+      </select>
+      
+      <label for="job-experience">Необхідний досвід:</label>
+      <select id="job-experience" required>
+        <option value="">Оберіть досвід</option>
+        <option value="Без досвіду">Без досвіду</option>
+        <option value="Від 6 місяців">Від 6 місяців</option>
+        <option value="Від 1 року">Від 1 року</option>
+        <option value="Від 2 років">Від 2 років</option>
+        <option value="Від 3 років">Від 3 років</option>
+      </select>
+      
+      <label for="job-description">Опис вакансії:</label>
+      <textarea id="job-description" rows="4" placeholder="Детальний опис вакансії, обов'язки..." required></textarea>
+      
+      <label for="job-requirements">Вимоги:</label>
+      <textarea id="job-requirements" rows="3" placeholder="Кожну вимогу з нового рядка" required></textarea>
+      
+      <label for="job-benefits">Умови та переваги:</label>
+      <textarea id="job-benefits" rows="3" placeholder="Кожну перевагу з нового рядка" required></textarea>
+      
+      <div class="actions">
+        <button type="submit">Опублікувати вакансію</button>
+        <button type="button" class="secondary" onclick="closeAddJobModal()">Скасувати</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Модальне вікно налаштувань профілю -->
+<div class="settingsModal" id="settingsModal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeSettingsModal()">×</span>
+    
+    <div class="tabs">
+      <div class="tab active" onclick="openTab('profile-tab')">Профіль</div>
+      <div class="tab" onclick="openTab('security-tab')">Безпека</div>
+      <div class="tab" onclick="openTab('notifications-tab')">Сповіщення</div>
+    </div>
+    
+    <div id="profile-tab" class="tab-content active">
+      <h2>Налаштування профілю</h2>
+      <div class="profile-info">
+        <label for="user-name">Ім'я:</label>
+        <input type="text" id="user-name" placeholder="Ваше ім'я">
+        
+        <label for="user-email">Email:</label>
+        <input type="email" id="user-email" placeholder="Ваш email" disabled>
+        
+        <label for="user-phone">Телефон:</label>
+        <input type="tel" id="user-phone" placeholder="+380 (__) ___ __ __">
+        
+        <label for="user-bio">Про себе:</label>
+        <textarea id="user-bio" rows="3" placeholder="Коротко розкажіть про себе"></textarea>
+        
+        <label for="user-resume">Резюме (посилання):</label>
+        <input type="url" id="user-resume" placeholder="https://example.com/resume">
+      </div>
+      
+      <div class="actions">
+        <button onclick="saveProfile()">Зберегти зміни</button>
+        <button class="secondary" onclick="closeSettingsModal()">Скасувати</button>
+      </div>
+    </div>
+    
+    <div id="security-tab" class="tab-content">
+      <h2>Налаштування безпеки</h2>
+      <div class="profile-info">
+        <label for="current-password">Поточний пароль:</label>
+        <input type="password" id="current-password" placeholder="Введіть поточний пароль">
+        
+        <label for="new-password">Новий пароль:</label>
+        <input type="password" id="new-password" placeholder="Введіть новий пароль">
+        
+        <label for="confirm-password">Підтвердіть новий пароль:</label>
+        <input type="password" id="confirm-password" placeholder="Повторіть новий пароль">
+      </div>
+      
+      <div class="actions">
+        <button onclick="changePassword()">Змінити пароль</button>
+        <button class="secondary" onclick="closeSettingsModal()">Скасувати</button>
+      </div>
+    </div>
+    
+    <div id="notifications-tab" class="tab-content">
+      <h2>Налаштування сповіщень</h2>
+      <div class="profile-info">
+        <label>
+          <input type="checkbox" id="email-notifications" checked>
+          Електронні сповіщення
+        </label>
+        
+        <label>
+          <input type="checkbox" id="new-jobs-notifications" checked>
+          Сповіщення про нові вакансії
+        </label>
+        
+        <label>
+          <input type="checkbox" id="messages-notifications" checked>
+          Сповіщення про повідомлення
+        </label>
+      </div>
+      
+      <div class="actions">
+        <button onclick="saveNotifications()">Зберегти налаштування</button>
+        <button class="secondary" onclick="closeSettingsModal()">Скасувати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Вікно авторизації -->
+<div class="authModal" id="authModal">
+  <div class="modal-content">
+    <h3 id="authTitle">Увійти</h3>
+    <form id="authForm">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Пароль" required>
+      <div id="nameField" style="display: none;">
+        <input type="text" id="name" placeholder="Ваше ім'я">
+      </div>
+      <button type="submit">Увійти</button>
+      <button type="button" class="secondary" onclick="toggleMode()">⇆ Перейти до реєстрації</button>
+    </form>
+    <p id="message" style="text-align:center; margin-top:10px;"></p>
+  </div>
+</div>
+
+<script>
+  // Глобальні змінні
+  let isLoginMode = true;
+  let currentUser = null;
+  
+  // Функції для роботи з UI
+  function toggleMode() {
+    isLoginMode = !isLoginMode;
+    document.getElementById('authTitle').innerText = isLoginMode ? 'Увійти' : 'Реєстрація';
+    document.querySelector('#authForm button[type="submit"]').innerText = isLoginMode ? 'Увійти' : 'Зареєструватися';
+    document.getElementById('nameField').style.display = isLoginMode ? 'none' : 'block';
+    document.getElementById('message').innerText = '';
+  }
+  
+  function openTab(tabId) {
+    // Приховуємо всі вкладки
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    // Деактивуємо всі таби
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    // Показуємо обрану вкладку
+    document.getElementById(tabId).classList.add('active');
+    
+    // Активуємо обраний таб
+    event.currentTarget.classList.add('active');
+  }
+  
+  function openModal(id) {
+    document.getElementById(`newsModal-${id}`).style.display = 'flex';
+  }
+  
+  function closeModal(id) {
+    document.getElementById(`newsModal-${id}`).style.display = 'none';
+  }
+  
+  function openAddJobModal() {
+    document.getElementById('addJobModal').style.display = 'flex';
+  }
+  
+  function closeAddJobModal() {
+    document.getElementById('addJobModal').style.display = 'none';
+    document.getElementById('addJobForm').reset();
+  }
+  
+  function openSettingsModal() {
+    // Заповнюємо форму даними користувача
+    document.getElementById('user-name').value = currentUser.name || '';
+    document.getElementById('user-email').value = currentUser.email;
+    document.getElementById('user-phone').value = currentUser.phone || '';
+    document.getElementById('user-bio').value = currentUser.bio || '';
+    document.getElementById('user-resume').value = currentUser.resume || '';
+    
+    document.getElementById('settingsModal').style.display = 'flex';
+  }
+  
+  function closeSettingsModal() {
+    document.getElementById('settingsModal').style.display = 'none';
+  }
+  
+  // Функції для роботи з даними
+  function showMain(user) {
+    currentUser = user;
+    document.getElementById('authModal').style.display = 'none';
+    document.getElementById('news-section').style.display = 'block';
+    document.getElementById('profile').innerHTML = `
+      👤 ${user.name || user.email.split('@')[0]} 
+      <button id="logout-btn" onclick="logout()">Вийти</button>
+    `;
+    
+    loadUserJobs();
+  }
+  
+  function logout() {
+    localStorage.removeItem('loggedIn');
+    location.reload();
+  }
+  
+  function saveProfile() {
+    const name = document.getElementById('user-name').value.trim();
+    const phone = document.getElementById('user-phone').value.trim();
+    const bio = document.getElementById('user-bio').value.trim();
+    const resume = document.getElementById('user-resume').value.trim();
+    
+    // Оновлюємо дані користувача
+    currentUser.name = name;
+    currentUser.phone = phone;
+    currentUser.bio = bio;
+    currentUser.resume = resume;
+    
+    // Оновлюємо дані в localStorage
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    const userIndex = users.findIndex(u => u.email === currentUser.email);
+    if (userIndex !== -1) {
+      users[userIndex] = currentUser;
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('loggedIn', JSON.stringify(currentUser));
+    }
+    
+    // Оновлюємо відображення імені в хедері
+    document.getElementById('profile').innerHTML = `
+      👤 ${currentUser.name || currentUser.email.split('@')[0]} 
+      <button id="logout-btn" onclick="logout()">Вийти</button>
+    `;
+    
+    alert('Профіль успішно оновлено!');
+    closeSettingsModal();
+  }
+  
+  function changePassword() {
+    const currentPassword = document.getElementById('current-password').value.trim();
+    const newPassword = document.getElementById('new-password').value.trim();
+    const confirmPassword = document.getElementById('confirm-password').value.trim();
+    
+    if (newPassword !== confirmPassword) {
+      alert('Новий пароль і підтвердження не співпадають!');
+      return;
+    }
+    
+    if (currentPassword !== currentUser.password) {
+      alert('Поточний пароль введено невірно!');
+      return;
+    }
+    
+    // Оновлюємо пароль
+    currentUser.password = newPassword;
+    
+    // Оновлюємо дані в localStorage
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    const userIndex = users.findIndex(u => u.email === currentUser.email);
+    if (userIndex !== -1) {
+      users[userIndex] = currentUser;
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('loggedIn', JSON.stringify(currentUser));
+    }
+    
+    alert('Пароль успішно змінено!');
+    document.getElementById('current-password').value = '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+  }
+  
+  function saveNotifications() {
+    const emailNotifications = document.getElementById('email-notifications').checked;
+    const newJobsNotifications = document.getElementById('new-jobs-notifications').checked;
+    const messagesNotifications = document.getElementById('messages-notifications').checked;
+    
+    // Зберігаємо налаштування (у реальному додатку тут буде запит на сервер)
+    currentUser.notifications = {
+      email: emailNotifications,
+      newJobs: newJobsNotifications,
+      messages: messagesNotifications
+    };
+    
+    alert('Налаштування сповіщень збережено!');
+  }
+  
+  function addNewJob(event) {
+    event.preventDefault();
+    
+    const title = document.getElementById('job-title').value.trim();
+    const company = document.getElementById('job-company').value.trim();
+    const salary = document.getElementById('job-salary').value.trim();
+    const location = document.getElementById('job-location').value.trim();
+    const type = document.getElementById('job-type').value;
+    const experience = document.getElementById('job-experience').value;
+    const description = document.getElementById('job-description').value.trim();
+    const requirements = document.getElementById('job-requirements').value.trim().split('\n');
+    const benefits = document.getElementById('job-benefits').value.trim().split('\n');
+    
+    // Створюємо унікальний ID для вакансії
+    const jobId = 'job-' + Date.now();
+    
+    // Форматуємо дату
+    const today = new Date();
+    const date = today.toLocaleDateString('uk-UA');
+    
+    // Створюємо об'єкт вакансії
+    const newJob = {
+      id: jobId,
+      title,
+      company,
+      salary,
+      location,
+      type,
+      experience,
+      description,
+      requirements,
+      benefits,
+      date,
+      author: currentUser.email
+    };
+    
+    // Зберігаємо вакансію
+    let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+    jobs.push(newJob);
+    localStorage.setItem('jobs', JSON.stringify(jobs));
+    
+    // Додаємо вакансію на сторінку
+    addJobToDOM(newJob);
+    
+    // Закриваємо модальне вікно і очищаємо форму
+    closeAddJobModal();
+    
+    alert('Вакансія успішно додана!');
+  }
+  
+  function addJobToDOM(job) {
+    const container = document.getElementById('user-jobs-container');
+    
+    const jobCard = document.createElement('div');
+    jobCard.className = 'news-card';
+    jobCard.setAttribute('onclick', `openModal('${job.id}')`);
+    jobCard.innerHTML = `
+      <h3>${job.title} — ${job.salary}</h3>
+      <p>${job.company}</p>
+      <p>${job.location} | ${job.type} | ${job.experience}</p>
+      <div class="date">Опубліковано: ${job.date}</div>
+    `;
+    
+    // Вставляємо перед кнопкою додавання
+    container.insertBefore(jobCard, container.firstChild);
+    
+    // Створюємо модальне вікно для цієї вакансії
+    createJobModal(job);
+  }
+  
+  function createJobModal(job) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = `newsModal-${job.id}`;
+    modal.style.display = 'none';
+    
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('${job.id}')">×</span>
+        <h2>${job.title}</h2>
+        <div class="job-details">
+          <p><strong>Зарплата:</strong> ${job.salary}</p>
+          <p><strong>Компанія:</strong> ${job.company}</p>
+          <p><strong>Локація:</strong> ${job.location}</p>
+          <p><strong>Тип зайнятості:</strong> ${job.type}</p>
+          <p><strong>Досвід роботи:</strong> ${job.experience}</p>
+          <p><strong>Опубліковано:</strong> ${job.date}</p>
+          
+          <div class="requirements">
+            <h4>Вимоги:</h4>
+            <ul>
+              ${job.requirements.map(req => `<li>${req}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <div class="benefits">
+            <h4>Умови:</h4>
+            <ul>
+              ${job.benefits.map(ben => `<li>${ben}</li>`).join('')}
+            </ul>
+          </div>
+          
+          <p><strong>Опис вакансії:</strong></p>
+          <p>${job.description}</p>
+        </div>
+        <button onclick="alert('Резюме успішно відправлено!')">Відправити резюме</button>
+        ${job.author === currentUser.email ? `<button class="danger" onclick="deleteJob('${job.id}')">Видалити вакансію</button>` : ''}
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+  }
+  
+  function deleteJob(jobId) {
+    if (confirm('Ви впевнені, що хочете видалити цю вакансію?')) {
+      // Видаляємо з localStorage
+      let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+      jobs = jobs.filter(job => job.id !== jobId);
+      localStorage.setItem('jobs', JSON.stringify(jobs));
+      
+      // Видаляємо картку з DOM
+      document.querySelector(`.news-card[onclick="openModal('${jobId}')"]`).remove();
+      
+      // Видаляємо модальне вікно
+      document.getElementById(`newsModal-${jobId}`).remove();
+      
+      alert('Вакансія успішно видалена!');
+    }
+  }
+  
+  function loadUserJobs() {
+    const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+    const userJobs = jobs.filter(job => job.author === currentUser.email);
+    const container = document.getElementById('user-jobs-container');
+    
+    // Очищаємо контейнер
+    container.innerHTML = '';
+    
+    if (userJobs.length > 0) {
+      const title = document.createElement('h2');
+      title.textContent = 'Мої вакансії';
+      container.appendChild(title);
+      
+      // Додаємо кожну вакансію
+      userJobs.forEach(job => {
+        addJobToDOM(job);
+      });
+    }
+  }
+  
+  // Обробники подій
+  document.getElementById('authForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const name = document.getElementById('name').value.trim();
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    
+    if (isLoginMode) {
+      const found = users.find(u => u.email === email && u.password === password);
+      if (found) {
+        localStorage.setItem('loggedIn', JSON.stringify(found));
+        showMain(found);
+      } else {
+        document.getElementById('message').innerText = '❌ Невірні дані';
+      }
+    } else {
+      if (users.some(u => u.email === email)) {
+        document.getElementById('message').innerText = '❌ Користувач з таким email вже існує';
+        return;
+      }
+      
+      const newUser = { 
+        email, 
+        password, 
+        name,
+        phone: '',
+        bio: '',
+        resume: '',
+        notifications: {
+          email: true,
+          newJobs: true,
+          messages: true
+        }
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('loggedIn', JSON.stringify(newUser));
+      showMain(newUser);
+    }
+  });
+  
+  document.getElementById('addJobForm').addEventListener('submit', addNewJob);
+  
+  // Ініціалізація при завантаженні сторінки
+  window.onload = () => {
+    const user = JSON.parse(localStorage.getItem('loggedIn'));
+    if (user) showMain(user);
+    
+    // Завантажуємо всі вакансії (якщо вони є)
+    const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+    jobs.forEach(job => {
+      if (!document.getElementById(`newsModal-${job.id}`)) {
+        createJobModal(job);
+      }
+    });
+  };
+</script>
+
+</body>
+</html>
