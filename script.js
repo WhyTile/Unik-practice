@@ -1,6 +1,12 @@
 let isLoginMode = true;
 let currentUser = null;
 
+// Функція toggleSidePanel може залишитися без змін
+function toggleSidePanel() {
+  const rightBlock = document.querySelector('.right-block');
+  rightBlock.classList.toggle('active');
+}
+
 function toggleMode() {
   isLoginMode = !isLoginMode;
   document.getElementById('authTitle').innerText = isLoginMode ? 'Увійти' : 'Реєстрація';
@@ -54,8 +60,8 @@ function showMain(user) {
   currentUser = user;
   document.getElementById('authModal').style.display = 'none';
   document.getElementById('news-section').style.display = 'block';
-  document.getElementById('profile').innerHTML = `
-    👤 ${user.name || user.email.split('@')[0]} 
+  document.getElementById('profile-text').innerHTML = `
+    ${user.name || user.email.split('@')[0]}
     <button id="logout-btn" onclick="logout()">Вийти</button>
   `;
   loadUserJobs();
@@ -83,7 +89,7 @@ function saveProfile() {
     localStorage.setItem('loggedIn', JSON.stringify(currentUser));
   }
   document.getElementById('profile').innerHTML = `
-    👤 ${currentUser.name || currentUser.email.split('@')[0]} 
+    👤 ${currentUser.name || currentUser.email.split('@')[0]}
     <button id="logout-btn" onclick="logout()">Вийти</button>
   `;
   alert('Профіль успішно оновлено!');
@@ -137,11 +143,28 @@ function addNewJob(event) {
   const type = document.getElementById('job-type').value;
   const experience = document.getElementById('job-experience').value;
   const description = document.getElementById('job-description').value.trim();
-  const requirements = document.getElementById('job-requirements').value.trim().split('\n');
-  const benefits = document.getElementById('job-benefits').value.trim().split('\n');
+
+  // Отримуємо вимоги та переваги, фільтруємо порожні рядки
+  const requirements = document.getElementById('job-requirements').value
+    .split('\n')
+    .map(item => item.trim())
+    .filter(item => item.length > 0);
+
+  const benefits = document.getElementById('job-benefits').value
+    .split('\n')
+    .map(item => item.trim())
+    .filter(item => item.length > 0);
+
+  // Перевірка на заповненість обов'язкових полів
+  if (!title || !company || !salary || !location || !type || !experience || !description || requirements.length === 0 || benefits.length === 0) {
+    alert('Будь ласка, заповніть всі обов\'язкові поля!');
+    return;
+  }
+
   const jobId = 'job-' + Date.now();
   const today = new Date();
   const date = today.toLocaleDateString('uk-UA');
+
   const newJob = {
     id: jobId,
     title,
@@ -156,9 +179,11 @@ function addNewJob(event) {
     date,
     author: currentUser.email
   };
+
   let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
   jobs.push(newJob);
   localStorage.setItem('jobs', JSON.stringify(jobs));
+
   addJobToDOM(newJob);
   closeAddJobModal();
   alert('Вакансія успішно додана!');
@@ -184,6 +209,7 @@ function createJobModal(job) {
   modal.className = 'modal';
   modal.id = `newsModal-${job.id}`;
   modal.style.display = 'none';
+
   modal.innerHTML = `
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal('${job.id}')">×</span>
@@ -214,6 +240,7 @@ function createJobModal(job) {
       ${job.author === currentUser.email ? `<button class="danger" onclick="deleteJob('${job.id}')">Видалити вакансію</button>` : ''}
     </div>
   `;
+
   document.body.appendChild(modal);
 }
 
@@ -232,14 +259,21 @@ function loadUserJobs() {
   const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
   const userJobs = jobs.filter(job => job.author === currentUser.email);
   const container = document.getElementById('user-jobs-container');
+  const newsSection = document.getElementById('news-section');
+
   container.innerHTML = '';
+
   if (userJobs.length > 0) {
+    
     const title = document.createElement('h2');
     title.textContent = 'Мої вакансії';
     container.appendChild(title);
+
     userJobs.forEach(job => {
       addJobToDOM(job);
     });
+
+    newsSection.insertBefore(container, newsSection.firstChild);
   }
 }
 
@@ -262,9 +296,9 @@ document.getElementById('authForm').addEventListener('submit', function(e) {
       document.getElementById('message').innerText = '❌ Користувач з таким email вже існує';
       return;
     }
-    const newUser = { 
-      email, 
-      password, 
+    const newUser = {
+      email,
+      password,
       name,
       phone: '',
       bio: '',

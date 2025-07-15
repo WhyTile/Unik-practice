@@ -11,15 +11,58 @@ header {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #333;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
+
+#profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 #profile {
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 15px;
 }
+
+#profile-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#logout-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #424242;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#logout-btn:hover {
+  background-color: #333;
+}
+
 main {
   padding: 20px;
+  margin-top: 60px; /* Відступ для хедера */
 }
 .news-card {
   background: #1e1e1e;
@@ -30,6 +73,39 @@ main {
   transition: all 0.2s;
   box-shadow: 0 0 5px #000;
   border-left: 3px solid #2196f3;
+  width: 80%;
+  max-width: 100%;
+}
+.right-block {
+  position: fixed;
+  top: 60px; /* Починається під хедером */
+  right: -200px;
+  width: 200px;
+  height: calc(100vh - 60px); /* Висота мінус висота хедера */
+  background: #1e1e1e;
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  z-index: 999; /* Нижче хедера */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto; /* Дозволяємо прокрутку */
+}
+
+.right-hover-zone {
+  position: fixed;
+  top: 60px; /* Починається під хедером */
+  right: 0;
+  width: 20px;
+  height: calc(100vh - 60px);
+  z-index: 998;
+}
+
+
+.right-hover-zone:hover + .right-block,
+.right-block:hover {
+  right: 0;
 }
 .news-card:hover {
   background: #2a2a2a;
@@ -179,4 +255,17 @@ button.danger:hover {
 }
 .actions button {
   flex: 1;
+}
+button.danger {
+  background-color: #e53935;
+  margin-top: 10px;
+}
+button.danger:hover {
+  background-color: #c62828;
+}
+#user-jobs-container h2 {
+  color: #2196f3;
+  margin: 20px 0 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
 }
