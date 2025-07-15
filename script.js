@@ -1,7 +1,6 @@
 let isLoginMode = true;
 let currentUser = null;
 
-// Функція toggleSidePanel може залишитися без змін
 function toggleSidePanel() {
   const rightBlock = document.querySelector('.right-block');
   rightBlock.classList.toggle('active');
@@ -144,7 +143,6 @@ function addNewJob(event) {
   const experience = document.getElementById('job-experience').value;
   const description = document.getElementById('job-description').value.trim();
 
-  // Отримуємо вимоги та переваги, фільтруємо порожні рядки
   const requirements = document.getElementById('job-requirements').value
     .split('\n')
     .map(item => item.trim())
@@ -155,7 +153,6 @@ function addNewJob(event) {
     .map(item => item.trim())
     .filter(item => item.length > 0);
 
-  // Перевірка на заповненість обов'язкових полів
   if (!title || !company || !salary || !location || !type || !experience || !description || requirements.length === 0 || benefits.length === 0) {
     alert('Будь ласка, заповніть всі обов\'язкові поля!');
     return;
@@ -264,7 +261,7 @@ function loadUserJobs() {
   container.innerHTML = '';
 
   if (userJobs.length > 0) {
-    
+
     const title = document.createElement('h2');
     title.textContent = 'Мої вакансії';
     container.appendChild(title);
@@ -319,6 +316,51 @@ document.getElementById('authForm').addEventListener('submit', function(e) {
 document.getElementById('addJobForm').addEventListener('submit', addNewJob);
 
 window.onload = () => {
+  initTheme();
+  const user = JSON.parse(localStorage.getItem('loggedIn'));
+
+  document.getElementById('home-page').style.display = 'block';
+  document.getElementById('news-section').style.display = 'none';
+
+  if (user) {
+    showMain(user);
+  } else {
+    document.getElementById('authModal').style.display = 'flex';
+    document.getElementById('home-page').style.display = 'none';
+  }
+
+  const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+  jobs.forEach(job => {
+    if (!document.getElementById(`newsModal-${job.id}`)) {
+      createJobModal(job);
+    }
+  });
+};
+function toggleTheme() {
+  const body = document.body;
+  const themeToggleBtn = document.querySelector('#theme-toggle button');
+
+  if (body.classList.contains('light-theme')) {
+    body.classList.remove('light-theme');
+    themeToggleBtn.textContent = '🌙';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.classList.add('light-theme');
+    themeToggleBtn.textContent = '☀️';
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-theme');
+    document.querySelector('#theme-toggle button').textContent = '☀️';
+  }
+}
+
+window.onload = () => {
+  initTheme();
   const user = JSON.parse(localStorage.getItem('loggedIn'));
   if (user) showMain(user);
   const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
@@ -328,3 +370,56 @@ window.onload = () => {
     }
   });
 };
+function goToHome() {
+
+  const newsSection = document.getElementById('news-section');
+  if (newsSection.style.display === 'block') {
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+
+    document.getElementById('authModal').style.display = 'none';
+    document.getElementById('news-section').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+function navigateTo(page) {
+  document.getElementById('home-page').style.display = 'none';
+
+  switch(page) {
+    case 'vacancies':
+      document.getElementById('news-section').style.display = 'block';
+      window.scrollTo(0, 0);
+      break;
+    case 'add-job':
+      openAddJobModal();
+      break;
+    case 'profile':
+      openSettingsModal();
+      break;
+  }
+}
+
+function goToHome() {
+
+  document.getElementById('news-section').style.display = 'none';
+  document.getElementById('authModal').style.display = 'none';
+
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.style.display = 'none';
+  });
+
+  document.getElementById('home-page').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function showMain(user) {
+  currentUser = user;
+  document.getElementById('authModal').style.display = 'none';
+  document.getElementById('home-page').style.display = 'block';
+  document.getElementById('profile-text').innerHTML = `
+    ${user.name || user.email.split('@')[0]}
+    <button id="logout-btn" onclick="logout()">Вийти</button>
+  `;
+  loadUserJobs();
+}

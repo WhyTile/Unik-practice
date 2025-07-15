@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Головна | Job Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div>Job Portal</div>
+    <div id="theme-toggle">
+      <button onclick="toggleTheme()">🌙</button>
+    </div>
+  </header>
+
+  <main class="home-main">
+    <div class="hero-section">
+      <h1>Знайдіть роботу мрії</h1>
+      <p>Найкращі вакансії від провідних компаній у одному місці</p>
+      <button class="cta-button" onclick="location.href='index3.html'">Перейти до вакансій</button>
+    </div>
+
+    <div class="features-container">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Пошук вакансій</h3>
+        <p>Широкий вибір вакансій у різних сферах діяльності</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">➕</div>
+        <h3>Публікація</h3>
+        <p>Легко публікуйте свої вакансії для тисяч кандидатів</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Аналітика</h3>
+        <p>Статистика та аналітика ринку праці</p>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h2>Про Job Portal</h2>
+      <p>Job Portal - це сучасний сервіс для пошуку роботи та підбору персоналу. Ми об'єднуємо роботодавців та шукачів роботи на одній платформі.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2023 Job Portal. Всі права захищені.</p>
+  </footer>
+
+  <script>
+    
+    function toggleTheme() {
+      const body = document.body;
+      const themeToggleBtn = document.querySelector('#theme-toggle button');
+
+      if (body.classList.contains('light-theme')) {
+        body.classList.remove('light-theme');
+        themeToggleBtn.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.add('light-theme');
+        themeToggleBtn.textContent = '☀️';
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        document.querySelector('#theme-toggle button').textContent = '☀️';
+      }
+    }
+
+    window.onload = initTheme;
+  </script>
+</body>
+</html>

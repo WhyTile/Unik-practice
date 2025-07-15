@@ -7,17 +7,23 @@
 </head>
 <body>
   <header>
-    <div>📰 Вакансії / Оголошення</div>
-    <div id="profile">
-      <div id="profile-icon">
-        <img src="ico.jpg" alt="Profile Icon" id="profile-img">
-      </div>
-      <div id="profile-text">
-        Олександр
-        <button id="logout-btn" onclick="logout()">Вийти</button>
-      </div>
+  <div>
+    <button id="home-btn" onclick="location.href='index1.html'" style="margin-right: 20px;">← Головна</button>
+    📰 Вакансії / Оголошення
+  </div>
+  <div id="profile">
+    <div id="profile-icon">
+      <img src="ico.jpg" alt="Profile Icon" id="profile-img">
     </div>
-  </header>
+    <div id="profile-text">
+      Олександр
+      <button id="logout-btn" onclick="logout()">Вийти</button>
+    </div>
+  </div>
+  <div id="theme-toggle">
+    <button onclick="toggleTheme()">🌙</button>
+  </div>
+</header>
 
 
   <div class="right-hover-zone"></div>
@@ -25,7 +31,23 @@
     <button onclick="openAddJobModal()">➕ Додати вакансію</button>
     <button class="secondary" onclick="openSettingsModal()">⚙️ Налаштування профілю</button>
   </div>
-
+  <main id="home-page">
+    <h1>Ласкаво просимо до Job Portal</h1>
+    <div class="cards-container">
+      <div class="main-card" onclick="navigateTo('vacancies')">
+        <h2>🔍 Вакансії</h2>
+        <p>Переглянути всі доступні вакансії</p>
+      </div>
+      <div class="main-card" onclick="navigateTo('add-job')">
+        <h2>➕ Додати вакансію</h2>
+        <p>Опублікувати нову вакансію</p>
+      </div>
+      <div class="main-card" onclick="navigateTo('profile')">
+        <h2>👤 Профіль</h2>
+        <p>Керування вашим профілем</p>
+      </div>
+    </div>
+  </main>
 <main id="news-section" style="display: none;">
   <div class="news-card" onclick="openModal('manager')">
     <h3>Менеджер з продажу — 25 000–50 000 ₴</h3>
