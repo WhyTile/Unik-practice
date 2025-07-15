@@ -14,67 +14,38 @@
     </div>
   </header>
 
-  <main class="home-main">
-    <div class="hero-section">
-      <h1>Знайдіть роботу мрії</h1>
-      <p>Найкращі вакансії від провідних компаній у одному місці</p>
-      <button class="cta-button" onclick="location.href='index3.html'">Перейти до вакансій</button>
-    </div>
+  <div class="fullscreen-hero">
+  <h1>Знайдіть роботу мрії</h1>
+  <p>Найкращі вакансії від провідних компаній у одному місці</p>
+  <button class="cta-button" onclick="location.href='index3.html'">Перейти до вакансій</button>
+</div>
 
-    <div class="features-container">
-      <div class="feature-card">
-        <div class="feature-icon">🔍</div>
+  <div class="content-section">
+    <h2>Наші можливості</h2>
+    <div class="features-grid">
+      <div class="feature-item">
         <h3>Пошук вакансій</h3>
-        <p>Широкий вибір вакансій у різних сферах діяльності</p>
+        <p>Широкий вибір вакансій у різних сферах діяльності. Ми пропонуємо понад 10,000 актуальних вакансій щодня. Ви можете фільтрувати результати за місцем роботи, зарплатою, досвідом та іншими критеріями.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">➕</div>
-        <h3>Публікація</h3>
-        <p>Легко публікуйте свої вакансії для тисяч кандидатів</p>
+      <div class="feature-item">
+        <h3>Публікація вакансій</h3>
+        <p>Легко публікуйте свої вакансії для тисяч кандидатів. Наша система дозволяє роботодавцям швидко додавати вакансії, керувати ними та отримувати відгуки від потенційних співробітників.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Аналітика</h3>
-        <p>Статистика та аналітика ринку праці</p>
+      <div class="feature-item">
+        <h3>Аналітика ринку праці</h3>
+        <p>Статистика та аналітика ринку праці. Ми надаємо детальні звіти про середні зарплати, популярність професій, конкурс на місця та інші важливі показники, які допоможуть вам прийняти правильне рішення.</p>
       </div>
     </div>
+  </div>
 
-    <div class="about-section">
-      <h2>Про Job Portal</h2>
-      <p>Job Portal - це сучасний сервіс для пошуку роботи та підбору персоналу. Ми об'єднуємо роботодавців та шукачів роботи на одній платформі.</p>
-    </div>
-  </main>
+  <div class="content-section">
+    <h2>Job Portal</h2>
+  </div>
 
   <footer>
     <p>© 2023 Job Portal. Всі права захищені.</p>
   </footer>
 
-  <script>
-    
-    function toggleTheme() {
-      const body = document.body;
-      const themeToggleBtn = document.querySelector('#theme-toggle button');
-
-      if (body.classList.contains('light-theme')) {
-        body.classList.remove('light-theme');
-        themeToggleBtn.textContent = '🌙';
-        localStorage.setItem('theme', 'dark');
-      } else {
-        body.classList.add('light-theme');
-        themeToggleBtn.textContent = '☀️';
-        localStorage.setItem('theme', 'light');
-      }
-    }
-
-    function initTheme() {
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        document.querySelector('#theme-toggle button').textContent = '☀️';
-      }
-    }
-
-    window.onload = initTheme;
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
