@@ -1,4 +1,3 @@
-/* Base styles */
 body {
   margin: 0;
   background: #121212;
@@ -397,8 +396,14 @@ button.danger:hover {
   background-color: #a8a8a8;
   color: #000;
 }
+.main-card {
+  width: 33%;
+  height: auto;
+  background-color: #424242;
+  color: #c0c0c0;
+}
+/*========================================*/
 
-/* Light theme styles */
 body.light-theme {
   background: #D0D7E1;
   color: #333;
